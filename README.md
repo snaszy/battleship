@@ -36,7 +36,7 @@
     1 x 4 length
     2 x 3 length
     3 x 2 length
-    4 x 1 lenght
+    4 x 1 length
 
 -Place ships
     gamboard(ships)
