@@ -12,9 +12,9 @@
     -Hit Function
         push coorindates to hit
         -hit [
-            {8, B},
-            {7, B},
-            {6, B}
+            {x: 8, y: B},
+            {x: 7, y: B},
+            {x: 6, y: B}
         ]
         if sunk function
             length - hit.length = 0
@@ -31,37 +31,44 @@
 
     -Create ships and push to array
 
-        --example ship
+        //example ship
         const battleship = {
             length: 4,
             location: [
-                {2, B},
-                {3, B},
-                {4, B},
-                {5, B}
+                {x: 2, y: B},
+                {x: 3, y: B},
+                {x: 4, y: B},
+                {x: 5, y: B}
             ],
+            vertical: false,
             hit: [],
             sunk: false
         }
-        --expected code to create these coordinates
+        //expected code to create these coordinates
         
-    -Define coordinates and push to ship
-        const startingLocation = {2, B}
+    //Define coordinates and push to ship
 
-        defineCoordinates(coordinate a, coordinate b)
-        if vertical equals true = 
-            coordinate a++
-        else  
-            nextChar(coordinate b)
+        const modifyCoordinates = (object) => {
+        if (object.vertical) {
+            object.x++
+        } else {
+            object.y = nextChar(object.y)
+        }
 
-        nextChar = (c) => {
+        const nextChar = (c) => {
             String.fromCharCode(c.charCodeAt(0) + 1)
         }
 
-        defineCoodinates(startingLocation)
-            if  ship.length > 1 
-            ship.location.push(coordinates)
-    
+        /*Really looking for this to take the ship length and add coordinates to the ships location and adding numbers if it is vertical and letters if it is horizontal*/
+
+        const addCoordinatesToLocation = (ship, startingLocation) => {
+            let currentLocation
+            for (let i = 0; i < ship.length; i++) {
+                ship.location.push(currentLocation);
+                currentLocation = modifyCoordinates(currentLocation);
+            }
+        };
+
     -Place ships
             ? place on coordinates
             i would assume lots of checks and balances here comparing coordinates to length.
