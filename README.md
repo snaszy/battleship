@@ -48,26 +48,24 @@
         
     //Define coordinates and push to ship
 
-        const modifyCoordinates = (object) => {
-        if (object.vertical) {
-            object.x++
-        } else {
-            object.y = nextChar(object.y)
-        }
-
+       createCoordinates = (object, number, letter) => {
+           if (obeject.vertical) {
+                return {
+                    x: number + 1,
+                    y: letter
+                }
+           } else {
+               return {
+                   x: number,
+                   y: letter next letter,
+               }
+           }
+       }
         const nextChar = (c) => {
             String.fromCharCode(c.charCodeAt(0) + 1)
         }
 
-        /*Really looking for this to take the ship length and add coordinates to the ships location and adding numbers if it is vertical and letters if it is horizontal*/
-
-        const addCoordinatesToLocation = (ship, startingLocation) => {
-            let currentLocation
-            for (let i = 0; i < ship.length; i++) {
-                ship.location.push(currentLocation);
-                currentLocation = modifyCoordinates(currentLocation);
-            }
-        };
+        
 
     -Place ships
             ? place on coordinates

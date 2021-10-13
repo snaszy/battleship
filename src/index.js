@@ -30,50 +30,102 @@ const sunk = (object) => {
     return object.sunk;
 }
 
-const createShip = (length) => {
+const createShip = (length, vertical) => {
     return {
         length,
-        vertical: false, 
+        vertical, 
         location: [],
         hit: [],
         sunk: false,
     }
 };
-
-const gameBoard = (object) => {
-   
-};
-const startingLocation = (object) => {
-    object.location.push({x: 2, y: "B"})
+const shipLengths = () => {
+    [4,3,3,2,2,2,1,1,1,1]
 }
 
-const modifyCoordinates = (object) => {
-    if (object.vertical) {
-        addLocationX(object);
+const gameBoard = (object) => {
+   //array of ships on the board
+   //kind of a tracker to see where items are on the board
+   //lets me decide where to place new ships
+   //lots of requirements about what ship could be placed where
+};
+const startingLocation = () => {
+    return {x: createRandomX(), y: createRandomY()}
+}
+
+const createRandomX = () => {
+    const getRandomInt = (max) => {
+        return Math.floor(Math.random() * max);
+    }
+    return getRandomInt(10);
+    //create random number between 1 and 10
+}
+
+const createRandomY = () => {
+    const getRandomArbitrary = (min, max) => {
+        return Math.random() * (max - min) + min;
+      }
+      return String.fromCharCode(getRandomArbitrary(65, 75));
+    //create random letter between A and J
+}
+
+const createRandomVertical = (object) => {
+    const getRandomInt = (max) => {
+        return Math.floor(Math.random() * max);
+    }
+    if (getRandomInt(2) > 0) {
+        object.vertical = true;
     } else {
-        addLocationY(object);   
+        object.vertical = false;
+    };
+    //create vertical true or false
+}
+
+const checkIfVertical = (object, coordinates) => {
+    if (object.vertical) {
+        changeLocationX(object, coordinates);
+    } else {
+        changeLocationY(object, coordinates);
     }
 };
 
-const addLocationX = (object) => {
-    object.location[0].x++;
+const changeLocationX = (object, coordinates) => {
+    if (object.location.length === 0) {
+        object.location.push(coordinates);
+    } else {
+        let currentLocation = object.location[object.location.length - 1];
+        object.location.push(createCoordinates(nextNum(currentLocation.x), currentLocation.y));
+    }
 }
 
-const addLocationY = (object) => {
-    object.location[0].y = nextChar(object.location[0].y);
+const changeLocationY = (object, coordinates) => {
+    if (object.location.length === 0) {
+        object.location.push(coordinates);
+    } else {
+        let currentLocation = object.location[object.location.length - 1];
+        object.location.push(createCoordinates(currentLocation.x, nextChar(currentLocation.y)));
+    }
 }
 
 const nextChar = (c) => {
     return String.fromCharCode(c.charCodeAt(0) + 1)
 };
 
-const addCoordinatesToLocation = (object, startingLocation) => {
-    let currentLocation = startingLocation;
-    for (let i = 0; i < object.length; i++) {
-        object.location.push(currentLocation);
-        modifyCoordinates(currentLocation);
+const nextNum = (number) => {
+    return number + 1
+}
+
+const createCoordinates = (number, letter) => {
+        return {
+            x: number,
+            y: letter
+        }
+}
+
+const addCoordinatesToLocation = (object, coordinates) => {
+    for (let i = 2; i < object.length + 2; i++) {
+        checkIfVertical(object, coordinates);
     }
-    return object.location
 };
 
 module.exports = {
@@ -81,7 +133,12 @@ module.exports = {
     hit,
     createShip,
     startingLocation,
-    modifyCoordinates,
+    createRandomX,
+    createRandomY,
+    createRandomVertical,
+    checkIfVertical,
+    changeLocationX,
+    changeLocationY,
     nextChar,
     addCoordinatesToLocation
 }

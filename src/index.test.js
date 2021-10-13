@@ -1,5 +1,5 @@
 const { expect } = require('@jest/globals');
-const { sunk, hit, createShip, modifyCoordinates, nextChar, addCoordinatesToLocation } = require('./index')
+const { sunk, hit, createShip, startingLocation, createRandomVertical, createRandomX, createRandomY, checkIfVertical,changeLocationX, changeLocationY, nextChar, addCoordinatesToLocation } = require('./index')
 
 const battleship = {
     length: 4,
@@ -23,7 +23,7 @@ it ('hit to push coordinates', () => {
     expect(battleship.hit).toEqual([{x:2, y:'B'}])
 })
 it ('creates ship', () => {
-    expect(createShip(4)).toEqual(
+    expect(createShip(4, false)).toEqual(
         {
             length: 4,
             vertical: false, 
@@ -33,34 +33,78 @@ it ('creates ship', () => {
         }
     )
 })
-it ('add to x cordinates', () => {
+
+it ('contain 1-10', () => {
+    expect(createRandomX()).toBeGreaterThan(0);
+    expect(createRandomX()).toBeLessThan(11);
+})
+
+it ('contain A-J', () => {
+    expect(createRandomY()).toMatch(/[A-J]+/g)
+})
+
+
+
+it ('add x cordinates to location', () => {
     const verticalShip = {
         vertical: true,
-        location: [{x: 2, y: 'B'}]
+        location: [],
     };
-    modifyCoordinates(verticalShip)
-    expect(verticalShip.location).toEqual([{x: 3, y: 'B'}]);
+    const coordinates = {x: 2, y: 'B'}
+    changeLocationX(verticalShip, coordinates)
+    expect(verticalShip.location).toEqual([{x: 2, y: 'B'}]);
 });
+
+it ('add updated x cordinates to location', () => {
+    const verticalShip = {
+        vertical: true,
+        location: [
+            {x: 2, y: 'B'}
+        ],
+    };
+    const coordinates = {x: 2, y: 'B'}
+    changeLocationX(verticalShip, coordinates)
+    expect(verticalShip.location).toEqual([
+        {x: 2, y: 'B'},
+        {x: 3, y: 'B'}
+    ]);
+});
+
 it ('returns the next character', () => {
     expect(nextChar('B')).toEqual('C');
 })
+
 it ('add to y cordinates', () => {
+    const horizontalShip = {
+        vertical: false,
+        location: []
+    };
+    const coordinates = {x: 2, y: 'B'}
+    changeLocationY(horizontalShip, coordinates)
+    expect(horizontalShip.location).toEqual([{x: 2, y: 'B'}]);
+});
+
+it ('add updated y cordinates to location', () => {
     const horizontalShip = {
         vertical: false,
         location: [{x: 2, y: 'B'}]
     };
-    modifyCoordinates(horizontalShip)
-    expect(horizontalShip.location).toEqual([{x: 2, y: 'C'}]);
+    const coordinates = {x: 2, y: 'B'}
+    changeLocationY(horizontalShip, coordinates)
+    expect(horizontalShip.location).toEqual([
+        {x: 2, y: 'B'},
+        {x: 2, y: 'C'}]);
 });
+
 it ('pushes all coordinates to locations of object', () => {
     const miniShip = {
         length: 4,
-        vertical: false,
+        vertical: true,
         location: []
     }
-    const start = {x: 2, y: 'B'};
+    let start = {x: 2, y: 'B'};
     addCoordinatesToLocation(miniShip, start);
-    expect(miniShip.location).toContain([
+    expect(miniShip.location).toEqual([
         {x: 2, y: 'B'},
         {x: 3, y: 'B'},
         {x: 4, y: 'B'},
