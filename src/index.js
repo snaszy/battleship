@@ -14,7 +14,8 @@ let battleship = {
 };
 
 const ship = (object) => {
-   
+   // pushes ships with empty coordinates to gameboardArray
+   gameBoard(createShip(shipLengths(), createRandomVertical()));
 }
 
 const hit = (object, coordinates) => {
@@ -45,6 +46,8 @@ const shipLengths = () => {
 
 const gameBoard = (object) => {
    //array of ships on the board
+   let gameBoardArray = [];
+   gameBoardArray.push(object);
    //kind of a tracker to see where items are on the board
    //lets me decide where to place new ships
    //lots of requirements about what ship could be placed where
