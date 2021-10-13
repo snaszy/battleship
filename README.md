@@ -22,54 +22,30 @@
 
 +Step Two
 -Gameboard Factory Function
-    ?place ship object at coordinates
-    ?how do i get the coordinates of where to put the ships
-    ?piece vertical or horizontal
-    ?where to start
 
-    -create coordinates for ships
+    -create ships from an array of lengths
+        randomly define if vertical 
 
-    -Create ships and push to array
+    -create random coordinates for ships and add
+  
+        -Define coordinates and push to ship
 
-        //example ship
-        const battleship = {
-            length: 4,
-            location: [
-                {x: 2, y: B},
-                {x: 3, y: B},
-                {x: 4, y: B},
-                {x: 5, y: B}
-            ],
-            vertical: false,
-            hit: [],
-            sunk: false
-        }
-        //expected code to create these coordinates
-        
-    //Define coordinates and push to ship
-
-       createCoordinates = (object, number, letter) => {
-           if (obeject.vertical) {
+        createCoordinates = (object, number, letter) => {
+            if (obeject.vertical) {
+                    return {
+                        x: number + 1,
+                        y: letter
+                    }
+            } else {
                 return {
-                    x: number + 1,
-                    y: letter
+                    x: number,
+                    y: letter next letter,
                 }
-           } else {
-               return {
-                   x: number,
-                   y: letter next letter,
-               }
-           }
-       }
-        const nextChar = (c) => {
-            String.fromCharCode(c.charCodeAt(0) + 1)
+            }
         }
-
-        
-
-    -Place ships
-            ? place on coordinates
-            i would assume lots of checks and balances here comparing coordinates to length.
+            const nextChar = (c) => {
+                String.fromCharCode(c.charCodeAt(0) + 1)
+            }
 
     -Coordinates for the board
         10 x 10 squares
@@ -77,15 +53,46 @@
         Left numbers
         -Gameboard Array Function
             const createGameboardArray = (rows, columns) => [...Array(rows.keys())].map(i => Array(columns));
+    
+    - Create gamebord
+        -creates an array with blank objects
+         these objects would be clickable either containing a ship
+         or being a miss.
+        -thinking of createing an array with 10 rows with 10 objects in each row.
+
+        gameboardarray = [
+               A, B, C, D, E, F, G, H, I, J
+           1 [{},{},{},{},{},{},{},{},{},{}]
+           2 [{},{},{},{},{},{},{},{},{},{}]
+           3 [{},{},{},{},{},{},{},{},{},{}]
+           4 [{},{},{},{},{},{},{},{},{},{}]
+           5 [{},{},{},{},{},{},{},{},{},{}]
+           6 [{},{},{},{},{},{},{},{},{},{}]
+           7 [{},{},{},{},{},{},{},{},{},{}]
+           8 [{},{},{},{},{},{},{},{},{},{}]
+           9 [{},{},{},{},{},{},{},{},{},{}]
+          10 [{},{},{},{},{},{},{},{},{},{}]
+        ]
 
     -Put ships on board
-        we are going to need to add the ships location to the gameboard
+        -pushes ships into the blank objects,
+         this would create the ships themselves and when clicked would mark as hit.
+        ?how to tell where to put the ship, translate coordinates to the arrray
+        ?if the object is blank how do i change the information
 
-        const gameboardArray = (rows, columns) => [...Array(rows.keys())].map(i => Array(columns));
-
-        addShip(ship)
-            battleship.location.push(gameBoardArray)
+       
         
+        object.length to cycle through location
+
+        object.location = coordinates
+
+        gameboardarray[a][b].push(coordinates)
+    
+        gameboardarry[0][0] = object.location of {x: 1, y: A} 
+
+        b = getchar of object.y - 64
+
+
     -Number of ships
         1 x 4 length
         2 x 3 length
