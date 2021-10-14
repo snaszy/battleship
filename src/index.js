@@ -12,10 +12,24 @@ let battleship = {
     hit: [],
     sunk: false
 };
+const newShip = (array) => {
+    let newShip = createShip(array); //creates a new ship with ship length array and random vertical 
+    createRandomVertical(newShip); //makes it vertical or horizontal
+    addCoordinatesToLocation(newShip, startingLocation());//adds vertical or horizontal coordinates for length
+}
 
-const ship = (object) => {
-   // pushes ships with empty coordinates to gameboardArray
-   gameBoard(createShip(shipLengths(), createRandomVertical()));
+const createShipsArray = (array) => {
+    let shipsArray = [];
+    for (let i = 0; i < array.length; i++) {
+        let ship = newShip(array[i]);
+        /* for (let j = 0; j < ship.location.length; j++) {
+            if (shipsArray.contains(ship.location[i][j])) { //checks to see if the new location is in the ship array
+                ship = newShip(array[i]); //redefines the ship coordinates if there is a match
+            };
+        } */
+        shipsArray.push(ship)
+    }     
+    return shipsArray;
 }
 
 const hit = (object, coordinates) => {
@@ -31,42 +45,63 @@ const sunk = (object) => {
     return object.sunk;
 };
 
-const createShip = (length, vertical) => {
+const createShip = (length) => {
     return {
         length,
-        vertical, 
+        vertical: false, 
         location: [],
         hit: [],
         sunk: false,
     };
 };
-const shipLengths = () => {
-    [4,3,3,2,2,2,1,1,1,1]
-}
-//probably going to have to do something with mapping
-//push the ships to an array, then fill the rest in as blank?
-//push the ships to an array and organize according to location?
 
-const createGameBoardArray = (rows, columns) => 
-[...Array(rows.keys())].map(i => Array(columns));
-
-const gameBoard = (object) => {
-   //array of ships on the board
-   let gameBoardArray = [];
-   gameBoardArray.push(object);
-   let gameBoardArray = createGameBoardArray(10,10);
-   //create a 10 x 10 array but how do I push the pieced onto the board.
-   //gameBoardArray[0]
-   //this creates a ship and pushes it to gameboard but i want it to replace a spot on the gameboard
-   for (let i = 0; i < object.length; i++) {
-        const newShip = createShip(object[i], createRandomVertical());
-        addCoordinatesToLocation(newShip);
-        gameBoardArray.push(newShip);
-   }
-   //kind of a tracker to see where items are on the board
-   //lets me decide where to place new ships
-   //lots of requirements about what ship could be placed where
+const shipLengthsArray = () => {
+    return [4,3,3,2,2,2,1,1,1,1];
 };
+
+const createGameBoardCoordinates = (number, letter) => {
+    return {
+        x: number,
+        y: letter,
+        ship: false
+    };
+};
+
+const createGameBoard = () => {
+    let gameBoardArray = [];
+    for (let i = 1; i < 11; i++) {
+        let currentArray = []
+        gameBoardArray.push(currentArray)
+        for (let j = 1; j < 11; j++) {
+           const currentLetter = String.fromCharCode(j + 64)
+           currentArray.push(createGameBoardCoordinates(i, currentLetter))
+        }
+    };
+    return gameBoardArray;
+};
+
+const addShipsToBoard = () => {
+    const gameBoard = createGameBoard();
+    const currentShips = createShipsArray(shipLengthsArray());
+
+    for (let i = 0; i < currentShips.length; i++) {
+
+        for (let j = 0; j < currentShips[0].location.length; j++) {
+            //i need to get the value of the ships location to cross reference with the gameBoard index
+            const currentLocation = currentShips[0].location[i][j];
+            const currentX = currentLocation.x;
+            const currentY = charCodeAt(currentLocation.y) - 64;
+            
+            if (currentShips[i].location[i][j] === gameBoard[currentX][currentY]){
+                gameBoard[currentX][currentY].ship = true;
+            }
+        }
+    }    
+    return gameBoard;
+}
+
+//requirements on where the ships are placed need to be implemented
+
 const startingLocation = () => {
     return {x: createRandomX(), y: createRandomY()};
 };
@@ -88,9 +123,7 @@ const createRandomY = () => {
 };
 
 const createRandomVertical = (object) => {
-    const getRandomInt = (max) => {
-        return Math.floor(Math.random() * max);
-    }
+    const getRandomInt = (max) => { Math.floor(Math.random() * max) };
     if (getRandomInt(2) > 0) {
         object.vertical = true;
     } else {
@@ -136,7 +169,7 @@ const nextNum = (number) => {
 const createCoordinates = (number, letter) => {
         return {
             x: number,
-            y: letter
+            y: letter,
         };
 };
 
@@ -170,5 +203,9 @@ module.exports = {
     changeLocationX,
     changeLocationY,
     nextChar,
-    addCoordinatesToLocation
+    addCoordinatesToLocation,
+    createShipsArray,
+    shipLengthsArray,
+    createGameBoard,
+    addShipsToBoard,
 }

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "watch-jest": "jest --watch",
-    "watch-webpack": "webpack --watch" 
+    "watch-webpack": "webpack --watch"
   },
   "repository": {
     "type": "git",
@@ -21,8 +21,8 @@
   "homepage": "https://github.com/snaszy/battleship#readme",
   "devDependencies": {
     "jest": "^27.2.4",
-    "webpack": "^5.57.1",
-    "webpack-cli": "^4.8.0"
+    "webpack": "^5.58.2",
+    "webpack-cli": "^4.9.0"
   },
   "dependencies": {
     "abab": "^2.0.5",

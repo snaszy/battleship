@@ -28,14 +28,14 @@
 
     -create random coordinates for ships and add
   
-        -Define coordinates and push to ship
+        -define starting coordinates and then add the rest and push to ship location
 
         createCoordinates = (object, number, letter) => {
             if (obeject.vertical) {
-                    return {
-                        x: number + 1,
-                        y: letter
-                    }
+                return {
+                    x: number + 1,
+                    y: letter
+                }
             } else {
                 return {
                     x: number,
@@ -46,6 +46,33 @@
             const nextChar = (c) => {
                 String.fromCharCode(c.charCodeAt(0) + 1)
             }
+
+    -Number of ships
+        1 x 4 length
+        2 x 3 length
+        3 x 2 length
+        4 x 1 length
+        create a ship lenght array to contain these requirements
+
+    -create ship array 
+        //this should be an object inside an array
+        //shipArray[0].location[i]
+        [ 
+            {
+                length,
+                vertical, 
+                location: [],
+                hit: [],
+                sunk: false,
+            },
+            {
+                length,
+                vertical, 
+                location: [],
+                hit: [],
+                sunk: false,
+            },
+        ]
 
     -Coordinates for the board
         10 x 10 squares
@@ -62,16 +89,16 @@
 
         gameboardarray = [
                A, B, C, D, E, F, G, H, I, J
-           1 [{},{},{},{},{},{},{},{},{},{}]
-           2 [{},{},{},{},{},{},{},{},{},{}]
-           3 [{},{},{},{},{},{},{},{},{},{}]
-           4 [{},{},{},{},{},{},{},{},{},{}]
-           5 [{},{},{},{},{},{},{},{},{},{}]
-           6 [{},{},{},{},{},{},{},{},{},{}]
-           7 [{},{},{},{},{},{},{},{},{},{}]
-           8 [{},{},{},{},{},{},{},{},{},{}]
-           9 [{},{},{},{},{},{},{},{},{},{}]
-          10 [{},{},{},{},{},{},{},{},{},{}]
+           1 [{x: 1, y: 'A' , ship: true},{},{},{},{},{},{},{},{},{}],
+           2 [{},{},{},{},{},{},{},{},{},{}],
+           3 [{},{},{},{},{},{},{},{},{},{}],
+           4 [{},{},{},{},{},{},{},{},{},{}],
+           5 [{},{},{},{},{},{},{},{},{},{}],
+           6 [{},{},{},{},{},{},{},{},{},{}],
+           7 [{},{},{},{},{},{},{},{},{},{}],
+           8 [{},{},{},{},{},{},{},{},{},{}],
+           9 [{},{},{},{},{},{},{},{},{},{}],
+          10 [{},{},{},{},{},{},{},{},{},{}],
         ]
 
     -Put ships on board
@@ -80,24 +107,36 @@
         ?how to tell where to put the ship, translate coordinates to the arrray
         ?if the object is blank how do i change the information
 
+        const addShipsToBoard = () => {
+            const gameBoard = createGameBoard();
+            const shipsArray = createShipsArray(shipLengthsArray());
+
+            for (let i = 0; i < shipsArray.length; i++) {
+                let currentArray = shipsArray[i];
+
+                for (let j = 0; j < currentArray.location.length; j++) {
+                    //i need to get the value of the ships location to cross reference with the gameBoard index
+                    const currentLocation = currentArray.location[i][j];
+                    const currentX = currentLocation.x;
+                    const currentY = charCodeAt(currentLocation.y) - 64;
+                    
+                    if (currentArray.location[i][j] === gameBoard[currentX][currentY]){
+                        gameBoard[currentX][currentY].ship = true;
+                    }
+                }
+            }    
+        }
+        //takes the two arrays and compares the ship array to game board array. changes the object on the gameboard to 
+        reflect if there is a ship there.
        
-        
-        object.length to cycle through location
-
-        object.location = coordinates
-
-        gameboardarray[a][b].push(coordinates)
     
-        gameboardarry[0][0] = object.location of {x: 1, y: A} 
 
-        b = getchar of object.y - 64
+    //ive got a function to do everything except make sure the ships array actually can fit on the game board array.
+    i need to make the ships array compare the locations and make sure they dont overlap.
 
-
-    -Number of ships
-        1 x 4 length
-        2 x 3 length
-        3 x 2 length
-        4 x 1 length
+        create ship
+        if shipArray.location[i] = currentLocation
+        create new ship   
 
     -Recieve Attack Function
         (a, b) 

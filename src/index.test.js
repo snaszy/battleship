@@ -1,5 +1,22 @@
 const { expect } = require('@jest/globals');
-const { sunk, hit, createShip, startingLocation, createRandomVertical, createRandomX, createRandomY, checkIfVertical,changeLocationX, changeLocationY, nextChar, addCoordinatesToLocation } = require('./index')
+const { 
+        sunk, 
+        hit, 
+        createShip, 
+        startingLocation, 
+        createRandomX, 
+        createRandomY, 
+        createRandomVertical, 
+        checkIfVertical, 
+        changeLocationX, 
+        changeLocationY, 
+        nextChar, 
+        addCoordinatesToLocation, 
+        createShipsArray, 
+        shipLengthsArray,
+        createGameBoard, 
+        addShipsToBoard 
+    } = require('./index')
 
 const battleship = {
     length: 4,
@@ -110,4 +127,19 @@ it ('pushes all coordinates to locations of object', () => {
         {x: 4, y: 'B'},
         {x: 5, y: 'B'},
     ])
+})
+
+it ('creates ships array from lengths', () => {
+    const shipsArray = createShipsArray(shipLengthsArray());
+    expect(shipsArray).toHaveLength(10)
+})
+
+it ('creates gameboard array', () => {
+    const gameBoard = createGameBoard();
+    expect(gameBoard).toHaveLength(10)
+})
+
+it ('add ships to board', () => {
+    const gameBoard = addShipsToBoard();
+    expect(gameBoard).toHaveLength(10)
 })
