@@ -138,6 +138,19 @@
         if shipArray.location[i] = currentLocation
         create new ship   
 
+    //now there is an issue with gameboard and createships running at the same time
+    I need to have a async funtion for this to find the location of the ship and compare it to the gameboard
+    -gameboard is created
+    -ships are created
+    -compare ships location to gameboard, if they match then we change the gameboard ship to true
+
+        -wait for ship to be created to find location
+        -then compare that location to the gameboard
+
+
+
+
+
     -Recieve Attack Function
         (a, b) 
         if (a, b) = ship then ship hit
@@ -152,3 +165,10 @@
 
 
 
+start game
+create ships
+create game board
+push ships to game board
+every action changes ships
+then pushes ships to gameboard
+or push misses to gameboard

@@ -15,7 +15,10 @@ const {
         createShipsArray, 
         shipLengthsArray,
         createGameBoard, 
-        addShipsToBoard 
+        addShipsToBoard,
+        placeShips, 
+        saveLocalStorage,
+        getLocalStorage,
     } = require('./index')
 
 const battleship = {
