@@ -172,3 +172,6 @@ push ships to game board
 every action changes ships
 then pushes ships to gameboard
 or push misses to gameboard
+
+recieve attack
+

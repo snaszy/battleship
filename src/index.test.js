@@ -1,4 +1,5 @@
 const { expect } = require('@jest/globals');
+const { SUGGEST_TO_CONTAIN_EQUAL } = require('jest-matcher-utils');
 const { 
         sunk, 
         hit, 
@@ -14,9 +15,11 @@ const {
         addCoordinatesToLocation, 
         createShipsArray, 
         shipLengthsArray,
-        createGameBoard, 
-        addShipsToBoard,
-        placeShips, 
+        createGameBoard,
+        addShipLocation, 
+        addShipLocationToBoard,
+        addShipHitsToBoard,
+        recieveAttack,
         saveLocalStorage,
         getLocalStorage,
     } = require('./index')
@@ -33,6 +36,32 @@ const battleship = {
     hit: [],
     sunk: false
 };
+const shipArray = [
+    {
+        length: 4,
+        location: [
+            {x: 1, y: 'A'},
+            {x: 2, y: 'A'},
+            {x: 3, y: 'A'},
+            {x: 4, y: 'A'}
+        ],
+        vertical: false,
+        hit: [
+            {x:1, y: 'A'}
+        ],
+        sunk: false
+    },
+    {
+        length: 2,
+        location: [
+            {x: 2, y: 'D'},
+            {x: 3, y: 'D'},
+        ],
+        vertical: false,
+        hit: [],
+        sunk: false
+    },
+]
 
 it('sunk returns false', () => {
     expect(sunk(battleship)).toBe(false);
@@ -142,7 +171,84 @@ it ('creates gameboard array', () => {
     expect(gameBoard).toHaveLength(10)
 })
 
-it ('add ships to board', () => {
-    const gameBoard = addShipsToBoard();
-    expect(gameBoard).toHaveLength(10)
+it ('adds ships location to gameboard', () => {
+    let boardCoordinates = {'hit': false, 'miss': false, 'ship': false, 'x': 2, 'y': 'B'};
+    let shipLocation = {'x': 2, 'y': 'B'};
+    addShipLocation(shipLocation, boardCoordinates);
+    expect(boardCoordinates).toMatchObject({'ship': true})
+})
+
+/* it ('modifies gameboard to show ship', () => {
+    let boardCoordinates = [[{'hit': false, 'miss': false, 'ship': false, 'x': 1, 'y': 'A'}], []];
+    let shipLocation = {'x': 1, 'y': 'A'};
+    let x = 0;
+    let y = 0;
+    updateGameBoard(shipLocation, boardCoordinates, x, y)
+    expect(boardCoordinates).toEqual(expect.arrayContaining([[{'hit': false, 'miss': false, 'ship': true, 'x': 1, 'y': 'A'}]]))
+}) */
+
+it ('ships are editable', () => {
+    let board = createGameBoard();
+    let coordinates = board[0][0];
+    coordinates.ship = true;
+    expect(board).toEqual(
+        expect.arrayContaining([
+            expect.arrayContaining([
+                expect.objectContaining({
+                    'hit': false, 'miss': false, 'ship': true, 'x': 1, 'y': 'A'
+                })
+            ])
+        ])
+    )
+})
+
+//need to test to see if parts of the code work. update gameboard is farther down and is not doing what it needs to in this function
+
+it ('updates gameboard array to show ships', () => {
+    let gameBoard = createGameBoard();
+    addShipLocationToBoard(shipArray, gameBoard)
+    
+    expect(gameBoard).toEqual(
+        expect.arrayContaining([
+            expect.arrayContaining([
+                expect.objectContaining({
+                    'hit': false, 'miss': false, 'ship': true, 'x': 1, 'y': 'A'
+                })
+            ])
+        ])
+    )
+})
+
+it ('updates gameboard array to show ships', () => {
+    let gameBoard = createGameBoard();
+    addShipHitsToBoard(shipArray, gameBoard)
+    
+    expect(gameBoard).toEqual(
+        expect.arrayContaining([
+            expect.arrayContaining([
+                expect.objectContaining({
+                    'hit': true, 'miss': false, 'ship': false, 'x': 1, 'y': 'A'
+                })
+            ])
+        ])
+    )
+})
+
+it ('recieve attaack', () => {
+    //recieveAttack(coordinates, gameboard, ships)
+    let gameBoard = createGameBoard();
+    let attackCoordinates = {x: 1, y: 'A'};
+    let ships = shipArray;
+    addShipLocationToBoard(ships, gameBoard);
+    recieveAttack(attackCoordinates, gameBoard, ships);
+    addShipHitsToBoard(ships, gameBoard);
+    expect(gameBoard).toEqual(
+        expect.arrayContaining([
+            expect.arrayContaining([
+                expect.objectContaining({
+                    'hit': true, 'miss': false, 'ship': true, 'x': 1, 'y': 'A'
+                })
+            ])
+        ])
+    )
 })
