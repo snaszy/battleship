@@ -57,6 +57,7 @@
     -create ship array 
         //this should be an object inside an array
         //shipArray[0].location[i]
+        //ship.location[i]
         [ 
             {
                 length,

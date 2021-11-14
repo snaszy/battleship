@@ -22,6 +22,11 @@ const {
         recieveAttack,
         saveLocalStorage,
         getLocalStorage,
+        player,
+        createPlayer,
+        playerTurn,
+        computerTurn,
+        takeTurns,
     } = require('./index')
 
 const battleship = {
@@ -164,6 +169,7 @@ it ('pushes all coordinates to locations of object', () => {
 it ('creates ships array from lengths', () => {
     const shipsArray = createShipsArray(shipLengthsArray());
     expect(shipsArray).toHaveLength(10)
+    console.log(shipsArray)
 })
 
 it ('creates gameboard array', () => {
@@ -204,7 +210,7 @@ it ('ships are editable', () => {
 
 //need to test to see if parts of the code work. update gameboard is farther down and is not doing what it needs to in this function
 
-it ('updates gameboard array to show ships', () => {
+it ('updates gameboard array to show ships location', () => {
     let gameBoard = createGameBoard();
     addShipLocationToBoard(shipArray, gameBoard)
     
@@ -219,7 +225,7 @@ it ('updates gameboard array to show ships', () => {
     )
 })
 
-it ('updates gameboard array to show ships', () => {
+it ('updates gameboard array to show ship that are hit', () => {
     let gameBoard = createGameBoard();
     addShipHitsToBoard(shipArray, gameBoard)
     
@@ -234,7 +240,7 @@ it ('updates gameboard array to show ships', () => {
     )
 })
 
-it ('recieve attaack', () => {
+it ('recieve attack adds hit to ship in array', () => {
     //recieveAttack(coordinates, gameboard, ships)
     let gameBoard = createGameBoard();
     let attackCoordinates = {x: 1, y: 'A'};
@@ -251,4 +257,38 @@ it ('recieve attaack', () => {
             ])
         ])
     )
+})
+
+it ('create player', () => {
+    let newPlayer = player();
+    expect(newPlayer).toEqual(
+        expect.objectContaining({
+            turn: false
+        })
+    )
+})
+
+it ('player turn modifies ship', () => {
+    //playerTurn(x, y, playerObject)
+    let newPlayer = player();
+    playerTurn(1, 'A', newPlayer);
+    //playerTurn(newPlayer)
+    expect(newPlayer.gameboard).toHaveLength(10)
+    expect(newPlayer.ships).toHaveLength(10)
+    expect(newPlayer.turn).toBeTruthy
+})
+
+it ('computer turn modifies ship', () => {
+    //computerTurn(computerObject)
+    let newComputer = player();
+    computerTurn(newComputer);
+    expect(newComputer.gameboard).toHaveLength(10)
+    expect(newComputer.ships).toHaveLength(10)
+    expect(newComputer.turn).toBeTruthy
+})
+
+it('take turns allows the current player to change', () => {
+    let newPlayer = player();
+    let newComputer = player();
+    takeTurns(newPlayer, newComputer);
 })

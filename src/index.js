@@ -26,16 +26,30 @@ const createNewShip = (array) => {
     return newShip
 }
 
-const createShipsArray = () => {
+const createShipsArray = (array, gameBoard) => {
     let shipsArray = [];
-    const lengthArray = shipLengthsArray();
-    for (let i = 0; i < lengthArray.length; i++) {
-        let newShip = createNewShip(lengthArray[i]);
-        shipsArray.push(newShip)
+    for (let i = 0; i < array.length; i++) {
+        if (array[0]) {
+            let firstLocation = checkStartingLocation(gameBoard)
+            shipsArray.push(createNewShip(firstLocation))
+        } else {
+            let newLocation = checkShipsInArray(array[i], shipsArray, array);
+            shipsArray.push(createNewShip(newLocation))
+        }
     }     
     return shipsArray;
     //need to find a way to prevent overlapping locations in the new ships.
 } 
+
+const checkShipsInArray = (location, shipsArray, array) => {
+    for (let i = 0; i < shipsArray.length; i++) {
+        if (shipsArray[i] !== location) {
+            return location;
+        } else {
+            createShipsArray(array)
+        }
+    }
+}
 
 const hit = (object, coordinates) => {
     object.hit.push(coordinates);
@@ -156,7 +170,7 @@ const addShipLocationToBoard = (ships, board) => {
         //goes through each ship
         //returns ships.location
         let ship = ships[i].location;
-        let shipHit = ships[i].hit;
+        //let shipHit = ships[i].hit;
 
         for (let j = 0; j < ship.length; j++) {
             currentShipIndex(ship[j], board)
@@ -187,11 +201,9 @@ const addShipLocation = (location, board, x, y) => {
 }
 
 const currentShipIndex = (ships, board) => {
-    const currentLocation = ships;
-    const boardIndexX = currentLocation.x - 1;
-    const currentCharacter = currentLocation.y
-    const boardIndexY = (currentCharacter.charCodeAt(0) - 64) - 1;
-    addShipLocation(currentLocation, findBoardIndex(board, boardIndexX, boardIndexY))
+    const boardIndexX = ships.x - 1;
+    const boardIndexY = (ships.y.charCodeAt(0) - 64) - 1;
+    addShipLocation(ships, findBoardIndex(board, boardIndexX, boardIndexY))
 
 }
 
@@ -205,16 +217,35 @@ const addShipHitsToBoard = (ships, board) => {
 };
 
 const currentHitIndex = (ships, board) => {
-    const currentLocation = ships;
-    const boardIndexX = currentLocation.x - 1;
-    const currentCharacter = currentLocation.y
-    const boardIndexY = (currentCharacter.charCodeAt(0) - 64) - 1;
-    addHitLocation(currentLocation, findBoardIndex(board, boardIndexX, boardIndexY))
+    const boardIndexX = ships.x - 1;
+    const boardIndexY = (ships.y.charCodeAt(0) - 64) - 1;
+    addHitLocation(ships, findBoardIndex(board, boardIndexX, boardIndexY))
 }
 
 const addHitLocation = (location, boardCoordinates) => {
     if (location.x === boardCoordinates.x && location.y === boardCoordinates.y) {
         boardCoordinates.hit = true;
+    }
+}
+
+const addMissToBoard = (ships, board) => {
+    for (let i = 0; i < ships.length; i++) {
+        let ship = ships[i].location;
+        for (let j = 0; j < ship.length; j++) {
+            currentMissIndex(ship[j], board)
+        } 
+    }
+};
+
+const currentMissIndex = (ships, board) => {
+    const boardIndexX = ships.x - 1;
+    const boardIndexY = (ships.y.charCodeAt(0) - 64) - 1;
+    addMissLocation(ships, findBoardIndex(board, boardIndexX, boardIndexY))
+}
+
+const addMissLocation = (location, boardCoordinates) => {
+    if (location.x !== boardCoordinates.x && location.y !== boardCoordinates.y) {
+        boardCoordinates.miss = true;
     }
 }
 
@@ -231,6 +262,15 @@ const addHitLocation = (location, boardCoordinates) => {
 } */
 
 //requirements on where the ships are placed need to be implemented so they dont got off the board
+const checkStartingLocation = (array) => {
+    let randomX = createRandomX();
+    let randomY = createRandomY();
+    const currentCoordinates = createCoordinates(randomX, randomY);
+    if ( currentCoordinates === array) {
+
+    }
+    return {currentCoordinates}
+}
 
 const startingLocation = () => {
     return {x: createRandomX(), y: createRandomY()};
@@ -321,18 +361,19 @@ const addCoordinatesToLocation = (object, coordinates) => {
 
 //recieve attack should push the hit to the ship
 //then the ship should be pushed to the board with the update
-const recieveAttack = (coordinates, gameBoard, ships) => {
+/* const recieveAttack = (coordinates, gameBoard, ships) => {
     //find coordinates of the boardboard and user inputed coordinates
-    const currentShip = ships.filter(ship => ship.location === coordinates);
-    const currentLocation = currentShip.filter(ship => ship.location === coordinates)
-    console.log(currentLocation)
+    const currentShip = ships.filter(function(ship) {
+        return ship.location === coordinates;
+    });
+    console.log(currentShip)
     console.log(coordinates)
     if (currentShip) {
         //find current ship through user inputed coordinates
         //adds hit to ship array
         hit(currentShip, coordinates);
         //adds hit to gameboard array
-        addShipHitsToBoard(coordinates, gameBoard)
+        addShipHitsToBoard(coordinates, gameBoard);
         //--push coordinates on ship and gameboard, either have the ship update the gameboard or do both
         //--instead of having addHitLocation update the gameboard, loop through the ships object to update it
         //check if all ships are sunk
@@ -343,56 +384,71 @@ const recieveAttack = (coordinates, gameBoard, ships) => {
         //add coordinates to gameboard showing a miss
         addMissToBoard(coordinates, gameBoard)
     }
-}
+} */
 
-const allShipsSunk = () => {
+const recieveAttack = (coordinates, board, ships) => {
+    for (let i = 0; i < ships.length; i++) {
+        let ship = ships[i].location;
+        for (let j = 0; j < ship.length; j++) {
+            if (ship[j] === coordinates) {
+                hit(ship[j], board);
+                addShipHitsToBoard(coordinates, board);
+                if (ship[i].length === ship[i].hit.length) {
+                    ship[i].sunk = true;
+                    allShipsSunk(ships);
+                } 
+            } else {
+                addMissToBoard(coordinates, board);
+            }
+        } 
+    }
+};
+
+const allShipsSunk = (shipsArray) => {
     //if total of 10 ships contain sunk true game over
-    const sunkShips = shipArray.filter(ships => ships.sunk === true);
+    const sunkShips = shipsArray.filter(ships => ships.sunk === true);
     if (sunkShips.length === 10) {
         alert('Game Over')
     }
 }
 
-const players = () => {
+const player = () => {
     //turns to attack enemy gameboard
     //computer capable of making random plays, no location twice
-    player(
-        createShipsArray(),
-        createGameBoard()
-    )
+    let shipArray = createShipsArray(shipLengthsArray())
+    let gameBoard = createGameBoard();
+    return createPlayer(shipArray, gameBoard)
 }
 
-const player = (ships, gameboard) => {
+const createPlayer = (ships, gameboard) => {
     //each player has their own gameboard with ships on it
     return {
         turn: false,
-        ships,
-        gameboard
+        'ships': ships,
+        'gameboard': gameboard
     };
 }
 
+//const playerTurn = (playerObject) => {
 const playerTurn = (x, y, playerObject) => {
     //takes in coordinates and players info
     //modifies ships and gameboard arrays to show hit or miss
-    const playerGameBoard = playerObject.gameboard;
-    const playerShips = playerObject.ships;
+    //const playerGameBoard = playerObject.gameboard;
+    //const playerShips = playerObject.ships;
     //where does current attack come into play?
-    const playerCoordinates = createCoordinates(x, y);
+    const playerCoordinates = {x: 1, y: 'A'}//createCoordinates(x, y);
     //recieve attack needs to go here.
-    recieveAttack(playerCoordinates, playerGameBoard, playerShips)
+    addShipLocationToBoard(playerObject.ships, playerObject.gameboard)
+    recieveAttack(playerCoordinates, playerObject.gameboard, playerObject.ships)
+    addShipHitsToBoard(playerObject.ships, playerObject.gameboard)
 }
 
 const computerTurn = (computerObject) => {
-    const computerGameBoard = computerObject.gameboard;
-    const computerShips = computerObject.ships;
-    const computerCoordinates = createCoordinates()
-    recieveAttack(computerCoordinates, computerGameBoard, computerShips)
-}
-
-const currentPlayer = (player) => {
-    if(player.turn) {
-
-    }
+    const checkLocation = checkStartingLocation(computerObject.gameboard)
+    const computerCoordinates = checkLocation//{x: 1, y: 'A'}//startingLocation();
+    addShipLocationToBoard(computerObject.ships, computerObject.gameboard)
+    recieveAttack(computerCoordinates, computerObject.gameboard, computerObject.ships)
+    addShipHitsToBoard(computerObject.ships, computerObject.gameboard)
 }
 
 const takeTurns = (player, computer) => {
@@ -414,8 +470,8 @@ const mainGameLoopsAndDom = () => {
     //maybe add it to the game array
     const creatNewGame = () => {
 
-        const newPlayer = players()
-        const newComputer = players()
+        const newPlayer = player()
+        const newComputer = player()
 
         takeTurns(newPlayer, newComputer)
         updateDOM()
@@ -453,4 +509,9 @@ module.exports = {
     saveLocalStorage,
     getLocalStorage,
     recieveAttack,
+    player,
+    createPlayer,
+    playerTurn,
+    computerTurn,
+    takeTurns,
 }
