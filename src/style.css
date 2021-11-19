@@ -1,0 +1,33 @@
+header {
+    text-align: center;
+}
+
+span {
+    text-align: center;
+}
+
+.container {
+    display: grid;
+    grid: 50px 1fr / 1fr 1fr;
+}
+
+.player {
+    margin: auto;
+    display: grid;
+    grid: repeat(10, 10px) / repeat(10, 10px);
+}
+
+.computer {
+    margin: auto;
+    display: grid;
+    grid: repeat(10, 10px) / repeat(10, 10px);
+
+}
+
+button#hit {
+    background-color: red;
+}
+
+#miss {
+    background-color: gray;
+}

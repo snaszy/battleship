@@ -1,4 +1,4 @@
-const { yellow } = require("chalk");
+//import './style.css';
 
 console.log('hello world')
 
@@ -146,11 +146,6 @@ const addMissLocation = (location, boardCoordinates) => {
         boardCoordinates.miss = true;
     }
 } */
-
-const findBoardIndex = (board, x, y) => {
-    //find the x and y of board according to numerical coordinates of ship
-    return board[x][y];
-}
  
 //tried to add ship, hit and miss all at once but one goes through an array they other is just a coordinate
 /* const updateGameBoard = (location, board, x, y) => {
@@ -169,11 +164,11 @@ const addShipLocationToBoard = (ships, board) => {
         //const ship = getLocation(currentShips[i]);
         //goes through each ship
         //returns ships.location
-        let ship = ships[i].location;
+        let shipsLocations = ships[i].location;
         //let shipHit = ships[i].hit;
 
-        for (let j = 0; j < ship.length; j++) {
-            currentShipIndex(ship[j], board)
+        for (let j = 0; j < shipsLocations.length; j++) {
+            currentShipIndex(shipsLocations[j], board)
             /* //ships[i] = ship
             //ship[j] = ships.location[j]
             const currentLocation = currentShips[i][j];
@@ -188,6 +183,12 @@ const addShipLocationToBoard = (ships, board) => {
     //dont know if this is returning all the values or just one. had the function in the loop but tried to move it. maybe that wont work
 };
 
+const currentShipIndex = (ship, board) => {
+    const boardIndexX = ship.x - 1;
+    const boardIndexY = (ship.y.charCodeAt(0) - 64) - 1;
+    addShipLocation(ship, findBoardIndex(board, boardIndexX, boardIndexY))
+}
+
 const addShipLocation = (location, boardCoordinates) => {
     //reference ship and board to define yes ship is there
 /*
@@ -200,11 +201,10 @@ const addShipLocation = (location, board, x, y) => {
     }
 }
 
-const currentShipIndex = (ships, board) => {
-    const boardIndexX = ships.x - 1;
-    const boardIndexY = (ships.y.charCodeAt(0) - 64) - 1;
-    addShipLocation(ships, findBoardIndex(board, boardIndexX, boardIndexY))
-
+const findBoardIndex = (board, x, y) => {
+    //find the x and y of board according to numerical coordinates of ship
+    //return board[x][y];
+    return board[x][y]
 }
 
 const addShipHitsToBoard = (ships, board) => {
@@ -266,7 +266,7 @@ const checkStartingLocation = (array) => {
     let randomX = createRandomX();
     let randomY = createRandomY();
     const currentCoordinates = createCoordinates(randomX, randomY);
-    if ( currentCoordinates === array) {
+    if (currentCoordinates === array) {
 
     }
     return {currentCoordinates}
@@ -415,12 +415,14 @@ const allShipsSunk = (shipsArray) => {
 const player = () => {
     //turns to attack enemy gameboard
     //computer capable of making random plays, no location twice
-    let shipArray = createShipsArray(shipLengthsArray())
+    let shipsArray = createShipsArray(shipLengthsArray())
     let gameBoard = createGameBoard();
-    return createPlayer(shipArray, gameBoard)
+    addShipLocationToBoard(shipsArray, gameBoard);
+    console.log(gameBoard)
+    return createPlayer(shipsArray, gameBoard)
 }
 
-const createPlayer = (ships, gameboard) => {
+let createPlayer = (ships, gameboard) => {
     //each player has their own gameboard with ships on it
     return {
         turn: false,
@@ -436,7 +438,8 @@ const playerTurn = (x, y, playerObject) => {
     //const playerGameBoard = playerObject.gameboard;
     //const playerShips = playerObject.ships;
     //where does current attack come into play?
-    const playerCoordinates = {x: 1, y: 'A'}//createCoordinates(x, y);
+    //const playerCoordinates = {x: 1, y: 'A'}
+    const playerCoordinates = createCoordinates(x, y);
     //recieve attack needs to go here.
     addShipLocationToBoard(playerObject.ships, playerObject.gameboard)
     recieveAttack(playerCoordinates, playerObject.gameboard, playerObject.ships)
@@ -451,12 +454,12 @@ const computerTurn = (computerObject) => {
     addShipHitsToBoard(computerObject.ships, computerObject.gameboard)
 }
 
-const takeTurns = (player, computer) => {
+const takeTurns = (x, y, player, computer) => {
     if (player.turn) {
         //random inputs for now
-        const currentInputX = createRandomX();
-        const currentInputY = createRandomY();
-        playerTurn(currentInputX, currentInputY, player);
+        //const currentInputX = createRandomX();
+        //const currentInputY = createRandomY();
+        playerTurn(x, y, player);
         player.turn = false;
     } else {
         computerTurn(computer);
@@ -465,28 +468,79 @@ const takeTurns = (player, computer) => {
 
 }
 
-const mainGameLoopsAndDom = () => {
-    //new game would take player 1 information and create the player, board, and ships
-    //maybe add it to the game array
-    const creatNewGame = () => {
+//new game would take player 1 information and create the player, board, and ships
+//maybe add it to the game array
+/* const createNewGame = () => {
 
-        const newPlayer = player()
-        const newComputer = player()
+    let newPlayer = player();
+    let newComputer = player();
+    addShipLocationToBoard(newPlayer.ships, newPlayer.gameboard);
+    updateDOM(newPlayer, playerContainer)
+    addShipLocationToBoard(newComputer.ships, newComputer.gameboard)
+    updateDOM(newComputer, computerContainer)
+    checkInput(newPlayer, newComputer);
+} */
 
-        takeTurns(newPlayer, newComputer)
-        updateDOM()
+/* const gameLoop = (x, y, player, computer) => {
+    takeTurns(x, y, player, computer)
+    updateDOM(player, playerContainer)
+    updateDOM(computer, computerContainer)
+} */
+
+//user interface
+//game loop of new players and gameboards
+//predetermined coordinates for pieces for now
+//html should display both players boards and render them using gameboard
+//game loop step through the game turn by turn using methods from other objects
+//if you want a new function for the game loop step back and figure out what module that should belong to
+//create conditions to end the game when all ships have been sunk
+
+
+/* const playerContainer = document.querySelector('[data-player]');
+const computerContainer = document.querySelector('[data-computer]');
+const fire = document.querySelector('[data-new-game]');
+
+const updateDOM = (array, container) => {
+    container.querySelectorAll('button').forEach(box => box.remove())
+    for (let i = 0; i < array.gameboard.length; i++) {
+        for (let j = 0; j < array.gameboard[i].length; j++) {
+            const gamePiece = document.createElement('button');
+            //gamePiece.classList.toggle(checkInformation(array.gameboard[i][j]))
+            //checkInformation(gamePiece, array.gameboard[i][j])
+            container.appendChild(gamePiece);
+            checkInformation(gamePiece, array.gameboard[i][j])
+        }
     }
-
-    //user interface
-    //game loop of new players and gameboards
-    //predetermined coordinates for pieces for now
-    //html should display both players boards and render them using gameboard
-    //game loop step through the game turn by turn using methods from other objects
-    //if you want a new function for the game loop step back and figure out what module that should belong to
-    //create conditions to end the game when all ships have been sunk
+}
+const checkInput = (player, computer) => {
+    fire.addEventListener('submit', () => {
+        const xInput = document.querySelector('x-location')
+        const xValue = xInput.value;
+        const yInput = document.querySelector('y-location')
+        const yValue = yInput.value;
+        gameLoop(xValue, yValue, player, computer)
+    })
 }
 
-module.exports = {
+const checkInformation = (button, information) => {
+    if (information.hit) {
+        button.classList.toggle('hit')
+    } else if (information.ship) {
+        button.classList.toggle('ship')
+    } else if (information.miss) {
+        button.classList.toggle('miss')
+    }
+} */
+/* gameContainer.querySelectorAll('[data-box]').forEach(box => box.remove())
+        for (let i = 0; i < 9; i++) {
+            const game = document.createElement('button');
+            game.setAttribute('data-box', '');
+            game.textContent = gameBoard[i];
+            gameContainer.appendChild(game); */
+
+//createNewGame();
+
+export {
     sunk,
     hit,
     createShip,
@@ -506,8 +560,6 @@ module.exports = {
     addShipLocation,
     addShipLocationToBoard,
     addShipHitsToBoard,
-    saveLocalStorage,
-    getLocalStorage,
     recieveAttack,
     player,
     createPlayer,

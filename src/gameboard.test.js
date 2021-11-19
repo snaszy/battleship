@@ -1,88 +1,21 @@
-import { 
-        sunk, 
-        hit, 
-        createShip, 
-        startingLocation, 
-        createRandomX, 
-        createRandomY, 
-        createRandomVertical, 
-        checkIfVertical, 
-        changeLocationX, 
-        changeLocationY, 
-        nextChar, 
-        addCoordinatesToLocation, 
-        createShipsArray, 
-        shipLengthsArray,
-        createGameBoard,
-        addShipLocation, 
-        addShipLocationToBoard,
-        addShipHitsToBoard,
-        recieveAttack,
-        player,
-        createPlayer,
-        playerTurn,
-        computerTurn,
-        takeTurns,
-    } from './index.js'
-
-const battleship = {
-    length: 4,
-    location: [
-        {x: 2, y: 'B'},
-        {x: 3, y: 'B'},
-        {x: 4, y: 'B'},
-        {x: 5, y: 'B'}
-    ],
-    vertical: false,
-    hit: [],
-    sunk: false
-};
-const shipArray = [
-    {
-        length: 4,
-        location: [
-            {x: 1, y: 'A'},
-            {x: 2, y: 'A'},
-            {x: 3, y: 'A'},
-            {x: 4, y: 'A'}
-        ],
-        vertical: false,
-        hit: [
-            {x:1, y: 'A'}
-        ],
-        sunk: false
-    },
-    {
-        length: 2,
-        location: [
-            {x: 2, y: 'D'},
-            {x: 3, y: 'D'},
-        ],
-        vertical: false,
-        hit: [],
-        sunk: false
-    },
-]
-
-it('sunk returns false', () => {
-    expect(sunk(battleship)).toBe(false);
-})
-it ('hit to push coordinates', () => {
-    const coordinates = {x:2, y:'B'};
-    hit(battleship, coordinates)
-    expect(battleship.hit).toEqual([{x:2, y:'B'}])
-})
-it ('creates ship', () => {
-    expect(createShip(4, false)).toEqual(
-        {
-            length: 4,
-            vertical: false, 
-            location: [],
-            hit: [],
-            sunk: false,
-        }
-    )
-})
+import {
+    startingLocation, 
+    createRandomX, 
+    createRandomY, 
+    createRandomVertical, 
+    checkIfVertical, 
+    changeLocationX, 
+    changeLocationY, 
+    nextChar, 
+    addCoordinatesToLocation, 
+    createShipsArray, 
+    shipLengthsArray,
+    createGameBoard,
+    addShipLocation, 
+    addShipLocationToBoard,
+    addShipHitsToBoard,
+    recieveAttack,
+} from './gameboard.js'
 
 it ('contain 1-10', () => {
     expect(createRandomX()).toBeGreaterThan(0);
@@ -92,7 +25,6 @@ it ('contain 1-10', () => {
 it ('contain A-J', () => {
     expect(createRandomY()).toMatch(/[A-J]+/g)
 })
-
 
 
 it ('add x cordinates to location', () => {
@@ -253,38 +185,4 @@ it ('recieve attack adds hit to ship in array', () => {
             ])
         ])
     )
-})
-
-it ('create player', () => {
-    let newPlayer = player();
-    expect(newPlayer).toEqual(
-        expect.objectContaining({
-            turn: false
-        })
-    )
-})
-
-it ('player turn modifies ship', () => {
-    //playerTurn(x, y, playerObject)
-    let newPlayer = player();
-    playerTurn(1, 'A', newPlayer);
-    //playerTurn(newPlayer)
-    expect(newPlayer.gameboard).toHaveLength(10)
-    expect(newPlayer.ships).toHaveLength(10)
-    expect(newPlayer.turn).toBeTruthy
-})
-
-it ('computer turn modifies ship', () => {
-    //computerTurn(computerObject)
-    let newComputer = player();
-    computerTurn(newComputer);
-    expect(newComputer.gameboard).toHaveLength(10)
-    expect(newComputer.ships).toHaveLength(10)
-    expect(newComputer.turn).toBeTruthy
-})
-
-it('take turns allows the current player to change', () => {
-    let newPlayer = player();
-    let newComputer = player();
-    takeTurns(newPlayer, newComputer);
 })
