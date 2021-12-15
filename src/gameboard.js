@@ -252,7 +252,7 @@ const allShipsSunk = (shipsArray) => {
     }
 }
 
-export {
+module.exports = {
     createGameBoardCoordinates,
     createGameBoard,
     addShipLocationToBoard,
@@ -279,5 +279,4 @@ export {
     addCoordinatesToLocation,
     recieveAttack,
     allShipsSunk,
-}
-    
+};

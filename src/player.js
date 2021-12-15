@@ -1,3 +1,12 @@
+const {
+    createShipsArray,
+    shipLengthsArray,
+} = require ('./ship')
+
+const {
+    checkStartingLocation,
+} = require ('./gameboard')
+
 const player = () => {
     //turns to attack enemy gameboard
     //computer capable of making random plays, no location twice
@@ -54,7 +63,7 @@ const takeTurns = (x, y, player, computer) => {
 
 }
 
-export {
+module.exports = {
     player,
     createPlayer,
     playerTurn,

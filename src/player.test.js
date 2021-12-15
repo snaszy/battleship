@@ -1,10 +1,14 @@
-import {
+const {
     player,
     createPlayer,
     playerTurn,
     computerTurn,
     takeTurns,
-} from './player.js'
+} = require('./player')
+
+const {
+    createShipsArray
+} = require('./ship')
 
 it ('create player', () => {
     let newPlayer = player();

@@ -1,8 +1,20 @@
-import { 
-    sunk, 
-    hit, 
-    createShip, 
-} from '/ship.js'
+const battleship = require('./battleship');
+
+const { 
+    createNewShip,
+    createShipsArray,
+    checkShipsInArray,
+    hit,
+    sunk,
+    createShip,
+    shipLengthsArray
+} = require('./ship.js')
+
+it ('creates ships array from lengths', () => {
+    const shipsArray = createShipsArray(shipLengthsArray());
+    expect(shipsArray).toHaveLength(10)
+    console.log(shipsArray)
+})
 
 it('sunk returns false', () => {
     expect(sunk(battleship)).toBe(false);
